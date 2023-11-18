@@ -4,6 +4,7 @@ from flask_cors import CORS
 import json 
 from flask import Flask , request, jsonify ,session
 from datetime import datetime
+from list_dict import convert_to_dict_list
 app = Flask(__name__)
 app.secret_key = 'super secret key'
 CORS(app)
@@ -112,6 +113,13 @@ def messreq():
     data =request.json
     print(data['messmode'])
     if data['messmode'] == 'MESSOUT':
+        query = f"SELECT mess_mode FROM mess_out where hostel_id = '{data['hostel_id']}';"
+        fetch_data =fetcher(conn,query)
+        print(fetch_data[0][0])
+        if  fetch_data[0][0]:
+            response_data = {'message': 'Mess request already sent', 'status': 410}
+            return jsonify(response_data)
+
         query = f"UPDATE mess_out SET mess_mode = 'true', date = '{data['date']}' WHERE hostel_id = '{data['hostel_id']}';"
 
         print("query",query)
@@ -129,20 +137,34 @@ def messreq():
         mess_out_date_1 = datetime.strptime(mess_out_date, '%m/%d/%Y').date()
         mess_in_date_2 = datetime.strptime(mess_in_date, '%m/%d/%Y').date()
         # #############################################
+        print(mess_in_date_2)
+        print(mess_out_date_1)
         diff=mess_in_date_2-mess_out_date_1
         print(diff.days)
         number_of_days=diff.days
         # #############################################
         query = f"UPDATE mess_out SET mess_mode = 'false' WHERE hostel_id = '{data['hostel_id']}';"
         insertor(conn,query)
+        query =f"insert into mess_out_hist (hostel_id,  messout_date,messin_date, days) values ('{data['hostel_id']}','{mess_in_date}','{mess_out_date}',{number_of_days});"
+        insertor(conn,query)
 
-        
+
         response_data = {'message': 'Mess request sent successfully', 'status': 200}
         return jsonify(response_data)
     data=jsonify("data","data")
     return data
 
-
+@app.route('/mess_hist' ,methods=['GET','POST'])
+def mess_hist():
+    conn,_=connector()
+    data =request.json
+    id=data['hostelid']
+    query = f"SELECT * FROM mess_out_hist where hostel_id = '{id}';"
+    data =fetcher(conn,query)
+    dict_data=convert_to_dict_list(data)
+    
+    
+    return dict_data
 
 if __name__ == '__main__':
     app.run(debug=True)

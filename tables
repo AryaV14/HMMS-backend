@@ -12,3 +12,10 @@ CREATE TABLE inmate (
     PRIMARY KEY (ktu_id, hostel_id),
     FOREIGN KEY (hostel_id) REFERENCES uer_det(inmate_id)
 );
+
+CREATE TABLE mess_out_hist (
+    hostel_id VARCHAR(255) PRIMARY KEY,
+    messout_date DATE,
+    messin_date DATE,
+    days INTEGER
+);
