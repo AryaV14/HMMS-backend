@@ -1,6 +1,6 @@
 def convert_to_dict_list(data):
     result = []
-    count=0
+    count=1
     for item in data:
         dict_item = {
             'id': count,
