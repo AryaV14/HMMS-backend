@@ -4,8 +4,8 @@ def convert_to_dict_list(data):
     for item in data:
         dict_item = {
             'id': count,
-            'messout_date': item[1].strftime('%Y-%m-%d'),
-            'messin_date': item[2].strftime('%Y-%m-%d'),
+            'messin_date': item[1].strftime('%Y-%m-%d'),
+            'messout_date': item[2].strftime('%Y-%m-%d'),
             'days': item[3]
         }
         count=count+1
