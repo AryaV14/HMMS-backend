@@ -1,5 +1,5 @@
 
-# Hostel Mess Management System - FRONTEND
+# Hostel Mess Management System - BACKEND
 
 ## Overview
 
